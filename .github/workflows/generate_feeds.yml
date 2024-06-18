@@ -91,12 +91,6 @@ jobs:
         echo "**Total Feeds**: $total_feeds" >> README.md
         echo "**Total Items**: $total_items" >> README.md
 
-        # Add some fancy appeal
-        echo "" >> README.md
-        echo "![RSS Feeds](https://via.placeholder.com/800x400?text=Daily+RSS+Feeds)" >> README.md
-        echo "" >> README.md
-        echo "Keep updated with these historical feeds and never miss a significant event from the past!" >> README.md
-
     # Step 6: Commit and push the generated XML files and README.md to the repository
     - name: Commit and push changes
       run: |
