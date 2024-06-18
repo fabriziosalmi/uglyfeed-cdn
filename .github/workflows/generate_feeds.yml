@@ -28,33 +28,33 @@ jobs:
         python -m pip install --upgrade pip
         pip install wikipedia pyyaml
 
-    # Step 4: Execute each script and save outputs to 'happened-today' folder
+    # Step 4: Execute each script in the 'generators' folder and save outputs to 'happened-today' folder
     - name: Run battles.py
-      run: python ww2_battles.py --path happened-today/ww2_battles.xml
+      run: python generators/ww2_battles.py --path happened-today/ww2_battles.xml
 
     - name: Run inventions.py
-      run: python inventions.py --path happened-today/inventions.xml
+      run: python generators/inventions.py --path happened-today/inventions.xml
 
     - name: Run presidents.py
-      run: python presidents.py --path happened-today/presidents.xml
+      run: python generators/presidents.py --path happened-today/presidents.xml
 
     - name: Run saints.py
-      run: python saints.py --path happened-today/saints.xml
+      run: python generators/saints.py --path happened-today/saints.xml
 
     - name: Run explorations.py
-      run: python explorations.py --path happened-today/explorations.xml
+      run: python generators/explorations.py --path happened-today/explorations.xml
 
     - name: Run arts_and_books.py
-      run: python arts.py --path happened-today/arts.xml
+      run: python generators/arts.py --path happened-today/arts_and_books.xml
 
     - name: Run artists_birthdays.py
-      run: python artists_birthdays.py --path happened-today/artists.xml
+      run: python generators/artists.py --path happened-today/artists.xml
 
     - name: Run soccer_matches.py
-      run: python soccer_matches.py --path happened-today/soccer.xml
+      run: python generators/soccer.py --path happened-today/soccer.xml
 
     - name: Run ancient_battles.py
-      run: python ancient_battles.py --path happened-today/ancient_battles.xml
+      run: python generators/ancient_battles.py --path happened-today/ancient_battles.xml
 
     # Step 5: Commit and push the generated XML files to the repository
     - name: Commit and push changes
