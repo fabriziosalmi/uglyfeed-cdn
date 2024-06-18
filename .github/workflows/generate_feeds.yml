@@ -1,7 +1,7 @@
 name: Generate Daily RSS Feeds
 
 on:
-  # Schedule the workflow to run daily at 00:00 UTC
+  # Schedule the workflow to run daily at 05:00 UTC
   schedule:
     - cron: '0 5 * * *'
   # Allow the workflow to be triggered manually
@@ -29,7 +29,7 @@ jobs:
         pip install wikipedia pyyaml
 
     # Step 4: Execute each script in the 'generators' folder and save outputs to 'happened-today' folder
-    - name: Run battles.py
+    - name: Run ww2_battles.py
       run: python generators/ww2_battles.py --path happened-today/ww2_battles.xml
 
     - name: Run inventions.py
@@ -56,13 +56,54 @@ jobs:
     - name: Run ancient_battles.py
       run: python generators/ancient_battles.py --path happened-today/ancient_battles.xml
 
-    # Step 5: Commit and push the generated XML files to the repository
+    # Step 5: Generate README.md with list of feeds and stats
+    - name: Generate README.md
+      run: |
+        echo "# Daily RSS Feeds" > README.md
+        echo "These feeds are updated daily with historical events and information." >> README.md
+        echo "" >> README.md
+        echo "## Available Feeds" >> README.md
+
+        # List each feed with its URL
+        for file in happened-today/*.xml; do
+          filename=$(basename "$file")
+          feedname="${filename%.*}"
+          url="https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/$filename"
+          echo "- [$feedname]($url)" >> README.md
+        done
+
+        echo "" >> README.md
+        echo "## Feed Statistics" >> README.md
+
+        # Generate some stats about the feeds
+        total_feeds=$(ls happened-today/*.xml | wc -l)
+        total_items=0
+
+        for file in happened-today/*.xml; do
+          count=$(grep -o "<item>" "$file" | wc -l)
+          total_items=$((total_items + count))
+          filename=$(basename "$file")
+          feedname="${filename%.*}"
+          echo "- **$feedname**: $count items" >> README.md
+        done
+
+        echo "" >> README.md
+        echo "**Total Feeds**: $total_feeds" >> README.md
+        echo "**Total Items**: $total_items" >> README.md
+
+        # Add some fancy appeal
+        echo "" >> README.md
+        echo "![RSS Feeds](https://via.placeholder.com/800x400?text=Daily+RSS+Feeds)" >> README.md
+        echo "" >> README.md
+        echo "Keep updated with these historical feeds and never miss a significant event from the past!" >> README.md
+
+    # Step 6: Commit and push the generated XML files and README.md to the repository
     - name: Commit and push changes
       run: |
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
-        git add happened-today/*.xml
-        git commit -m "Update RSS feeds"
+        git add happened-today/*.xml README.md
+        git commit -m "Update RSS feeds and README.md"
         git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
       env:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
