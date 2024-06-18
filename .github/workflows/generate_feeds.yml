@@ -59,10 +59,10 @@ jobs:
     # Step 5: Commit and push the generated XML files to the repository
     - name: Commit and push changes
       run: |
-        git config --local user.name "GitHub Actions"
-        git config --local user.email "actions@github.com"
+        git config --local user.name "fabriziosalmi"
+        git config --local user.email "fabrizio.salmi@gmail.com"
         git add happened-today/*.xml
         git commit -m "Update RSS feeds"
         git push
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
