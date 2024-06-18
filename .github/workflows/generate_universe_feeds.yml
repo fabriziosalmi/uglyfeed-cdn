@@ -20,13 +20,13 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11'  # Use the Python version your scripts are compatible with
+        python-version: '3.11'
 
     # Step 3: Install dependencies
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pyyaml
+        pip install wikipedia
 
     # Step 4: Execute the universe.py script and save outputs to 'universe' folder
     - name: Run universe.py
@@ -68,12 +68,6 @@ jobs:
           item_count=$(grep -o "<item>" "$file" | wc -l)
           echo "| [$feedname]($url) | $description | $item_count |" >> universe/README.md
         done
-
-        # Add some fancy appeal
-        echo "" >> universe/README.md
-        echo "![Universe Feeds](https://via.placeholder.com/800x400?text=Daily+Universe+Feeds)" >> universe/README.md
-        echo "" >> universe/README.md
-        echo "Keep updated with these daily feeds and enjoy exploring the universe every day!" >> universe/README.md
 
     # Step 6: Commit and push the generated XML files and README.md to the repository
     - name: Commit and push changes
