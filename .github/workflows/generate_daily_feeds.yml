@@ -89,7 +89,7 @@ jobs:
           url="https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/$filename"
           description=$(feed_description "$feedname")
           item_count=$(grep -o "<item>" "$file" | wc -l)
-          echo "| [$feedname]($url) | $description | $item_count |" >> happened-today/README.md
+          echo "| 🔗 [$feedname]($url) | $description | $item_count |" >> happened-today/README.md
         done
 
     # Step 6: Commit and push the generated XML files and README.md to the repository
