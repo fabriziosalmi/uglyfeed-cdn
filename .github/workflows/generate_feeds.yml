@@ -3,7 +3,7 @@ name: Generate Daily RSS Feeds
 on:
   # Schedule the workflow to run daily at 00:00 UTC
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 5 * * *'
   # Allow the workflow to be triggered manually
   workflow_dispatch:
 
