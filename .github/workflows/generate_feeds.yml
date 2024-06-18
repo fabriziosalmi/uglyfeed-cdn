@@ -51,7 +51,7 @@ jobs:
       run: python generators/artists.py --path happened-today/artists.xml
 
     - name: Run soccer_matches.py
-      run: python generators/soccer.py --path happened-today/soccer.xml
+      run: python generators/soccer.py --path happened-today/soccer_matches.xml
 
     - name: Run ancient_battles.py
       run: python generators/ancient_battles.py --path happened-today/ancient_battles.xml
@@ -59,10 +59,10 @@ jobs:
     # Step 5: Commit and push the generated XML files to the repository
     - name: Commit and push changes
       run: |
-        git config --local user.name "fabriziosalmi"
-        git config --local user.email "fabrizio.salmi@gmail.com"
+        git config --local user.name "GitHub Actions"
+        git config --local user.email "actions@github.com"
         git add happened-today/*.xml
         git commit -m "Update RSS feeds"
-        git push
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
       env:
-        GITHUB_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
+        GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
