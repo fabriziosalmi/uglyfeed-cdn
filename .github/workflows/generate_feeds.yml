@@ -59,44 +59,45 @@ jobs:
     # Step 5: Generate README.md with list of feeds and stats
     - name: Generate README.md
       run: |
-        echo "# Daily RSS Feeds" > README.md
-        echo "These feeds are updated daily with historical events and information." >> README.md
-        echo "" >> README.md
-        echo "## Available Feeds" >> README.md
+        echo "# 🌍 Happened Today" > happened-today/README.md
+        echo "" >> happened-today/README.md
+        echo "Welcome to the daily update of significant events from history! Below are the RSS feeds with the latest information updated today." >> happened-today/README.md
+        echo "" >> happened-today/README.md
+        echo "| Feed | Description | Item Count |" >> happened-today/README.md
+        echo "|------|-------------|------------|" >> happened-today/README.md
 
-        # List each feed with its URL
+        # Function to generate feed descriptions
+        feed_description() {
+          case "$1" in
+            ww2_battles) echo "World War II battles that occurred today." ;;
+            inventions) echo "Notable inventions unveiled on this date." ;;
+            presidents) echo "Births of presidents and leaders today." ;;
+            saints) echo "Saints commemorated today across religions." ;;
+            explorations) echo "Famous explorations that happened today." ;;
+            arts_and_books) echo "Artworks and books released on this date." ;;
+            artists) echo "Births of notable writers, poets, directors, and actors today." ;;
+            soccer_matches) echo "Significant soccer matches played on this date." ;;
+            ancient_battles) echo "Ancient battles and wars before 1000 AD." ;;
+            *) echo "Historical events happening today." ;;
+          esac
+        }
+
+        # List each feed with its URL, description, and item count
         for file in happened-today/*.xml; do
           filename=$(basename "$file")
           feedname="${filename%.*}"
           url="https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/$filename"
-          echo "- [$feedname]($url)" >> README.md
+          description=$(feed_description "$feedname")
+          item_count=$(grep -o "<item>" "$file" | wc -l)
+          echo "| [$feedname]($url) | $description | $item_count |" >> happened-today/README.md
         done
-
-        echo "" >> README.md
-        echo "## Feed Statistics" >> README.md
-
-        # Generate some stats about the feeds
-        total_feeds=$(ls happened-today/*.xml | wc -l)
-        total_items=0
-
-        for file in happened-today/*.xml; do
-          count=$(grep -o "<item>" "$file" | wc -l)
-          total_items=$((total_items + count))
-          filename=$(basename "$file")
-          feedname="${filename%.*}"
-          echo "- **$feedname**: $count items" >> README.md
-        done
-
-        echo "" >> README.md
-        echo "**Total Feeds**: $total_feeds" >> README.md
-        echo "**Total Items**: $total_items" >> README.md
 
     # Step 6: Commit and push the generated XML files and README.md to the repository
     - name: Commit and push changes
       run: |
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
-        git add happened-today/*.xml README.md
+        git add happened-today/*.xml happened-today/README.md
         git commit -m "Update RSS feeds and README.md"
         git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
       env:
