@@ -1,0 +1,87 @@
+name: Generate Daily Universe Feeds
+
+on:
+  # Schedule the workflow to run daily at 05:00 UTC
+  schedule:
+    - cron: '0 5 * * *'
+  # Allow the workflow to be triggered manually
+  workflow_dispatch:
+
+jobs:
+  generate-universe-feeds:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the repository
+    - name: Check out the repository
+      uses: actions/checkout@v3
+
+    # Step 2: Set up Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Use the Python version your scripts are compatible with
+
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pyyaml
+
+    # Step 4: Execute the universe.py script and save outputs to 'universe' folder
+    - name: Run universe.py
+      run: python generators/universe.py --path universe/
+
+    # Step 5: Generate README.md with list of feeds and stats
+    - name: Generate README.md
+      run: |
+        echo "# 🌌 Universe Feeds" > universe/README.md
+        echo "" >> universe/README.md
+        echo "Welcome to the daily update of various astronomy topics! Below are the RSS feeds with the latest information updated today." >> universe/README.md
+        echo "" >> universe/README.md
+        echo "| Feed | Description | Item Count |" >> universe/README.md
+        echo "|------|-------------|------------|" >> universe/README.md
+
+        # Function to generate feed descriptions
+        feed_description() {
+          case "$1" in
+            astronomy_fact) echo "Interesting astronomy facts updated daily." ;;
+            astronomical_event) echo "Significant astronomical events occurring today." ;;
+            planet) echo "Information about a different planet each day." ;;
+            star) echo "Details about a star each day." ;;
+            galaxy) echo "Explore a different galaxy every day." ;;
+            constellation) echo "Learn about a different constellation each day." ;;
+            asteroid_comet) echo "Facts about an asteroid or comet daily." ;;
+            space_technology) echo "Discoveries and advancements in space technology." ;;
+            astronomer) echo "Profiles of famous astronomers throughout history." ;;
+            space_mission) echo "Details of significant space missions." ;;
+            *) echo "Daily content about various astronomy topics." ;;
+          esac
+        }
+
+        # List each feed with its URL, description, and item count
+        for file in universe/*.xml; do
+          filename=$(basename "$file")
+          feedname="${filename%.*}"
+          url="https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/universe/$filename"
+          description=$(feed_description "$feedname")
+          item_count=$(grep -o "<item>" "$file" | wc -l)
+          echo "| [$feedname]($url) | $description | $item_count |" >> universe/README.md
+        done
+
+        # Add some fancy appeal
+        echo "" >> universe/README.md
+        echo "![Universe Feeds](https://via.placeholder.com/800x400?text=Daily+Universe+Feeds)" >> universe/README.md
+        echo "" >> universe/README.md
+        echo "Keep updated with these daily feeds and enjoy exploring the universe every day!" >> universe/README.md
+
+    # Step 6: Commit and push the generated XML files and README.md to the repository
+    - name: Commit and push changes
+      run: |
+        git config --local user.name "fabriziosalmi"
+        git config --local user.email "fabrizio.salmi@gmail.com"
+        git add universe/*.xml universe/README.md
+        git commit -m "Update Universe RSS feeds and README.md"
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
+      env:
+        GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
