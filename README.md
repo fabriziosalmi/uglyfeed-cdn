@@ -25,7 +25,3 @@ These feeds are updated daily with historical events and information.
 
 **Total Feeds**: 9
 **Total Items**: 45
-
-![RSS Feeds](https://via.placeholder.com/800x400?text=Daily+RSS+Feeds)
-
-Keep updated with these historical feeds and never miss a significant event from the past!
