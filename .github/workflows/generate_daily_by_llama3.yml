@@ -1,4 +1,4 @@
-name: generate daily by llama3
+name: Generate daily by llama3
 
 on:
   # Schedule the workflow to run daily at 07:00 UTC
