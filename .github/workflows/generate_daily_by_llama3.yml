@@ -1,0 +1,87 @@
+name: generate daily by llama3
+
+on:
+  # Schedule the workflow to run daily at 07:00 UTC
+  schedule:
+    - cron: '0 7 * * *'
+  # Allow the workflow to be triggered manually
+  workflow_dispatch:
+
+jobs:
+  rewrite-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Check out the `UglyFeed` repository
+    - name: Check out UglyFeed repository
+      uses: actions/checkout@v3
+      with:
+        repository: fabriziosalmi/UglyFeed
+        path: UglyFeed
+
+    # Step 2: Override `config.yaml` parameters using secrets
+    - name: Override config.yaml with secrets
+      run: |
+        # Backup original config.yaml
+        cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
+
+        # Use yq to override values in config.yaml with GitHub Secrets and environment variables
+        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
+        yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
+        yq eval '.github_token = strenv(GITHUB_TOKEN)' -i UglyFeed/config.yaml
+        yq eval '.github_repo = strenv(GITHUB_REPO)' -i UglyFeed/config.yaml
+        yq eval '.enable_github = true' -i UglyFeed/config.yaml
+        yq eval '.folders.output_folder = "uglyfeeds"' -i UglyFeed/config.yaml
+
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        SELECTED_API: "Groq"  # Change as needed
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_REPO: "fabriziosalmi/uglyfeed-cdn"  # Adjust to your needs
+
+    # Step 3: Install Python dependencies
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r UglyFeed/requirements.txt
+
+    # Step 4: Execute `main.py` to aggregate and process feeds
+    - name: Run main.py
+      run: |
+        cd UglyFeed
+        python main.py
+
+    # Step 5: Execute `llm_processor.py` to rewrite the content
+    - name: Run llm_processor.py
+      run: |
+        cd UglyFeed
+        python llm_processor.py
+
+    # Step 6: Execute `json2rss.py` to convert JSON to RSS
+    - name: Run json2rss.py
+      run: |
+        cd UglyFeed
+        python json2rss.py
+
+    # Step 7: Execute `deploy_xml.py` to deploy final XML to `feeds` directory
+    - name: Run deploy_xml.py
+      run: |
+        cd UglyFeed
+        python deploy_xml.py
+
+    # Step 8: Move the deployed XML to the 'feeds' directory in the `uglyfeed-cdn` repository
+    - name: Deploy to feeds directory
+      run: |
+        # Create `feeds` directory in the uglyfeed-cdn repository if it doesn't exist
+        mkdir -p ../uglyfeed-cdn/feeds
+
+        # Copy the deployed XML files from `uglyfeeds` to `feeds` directory
+        cp UglyFeed/uglyfeeds/*.xml ../uglyfeed-cdn/feeds/
+
+        # Commit and push the changes to the `uglyfeed-cdn` repository
+        cd ../uglyfeed-cdn
+        git config --local user.name "fabriziosalmi"
+        git config --local user.email "fabrizio.salmi@gmail.com"
+        git add feeds/*.xml
+        git commit -m "Deploy rewritten RSS feeds"
+        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
