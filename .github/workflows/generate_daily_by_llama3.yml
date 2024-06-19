@@ -1,4 +1,4 @@
-name: Generate daily by llama3
+name: Rewrite Feeds and Deploy
 
 on:
   # Schedule the workflow to run daily at 07:00 UTC
@@ -35,41 +35,62 @@ jobs:
 
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        SELECTED_API: "Groq"  # Change as needed
-        GITHUB_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
-        CDN_REPO: "fabriziosalmi/uglyfeed-cdn"  # Adjust to your needs
+        SELECTED_API: ${{ secrets.SELECTED_API }}
+        GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
+        CDN_REPO: ${{ secrets.CDN_REPO }}
 
-    # Step 3: Install Python dependencies
+    # Step 3: Overwrite the input/feeds.txt file with the new feeds list
+    - name: Overwrite input/feeds.txt
+      run: |
+        echo "http://www.agi.it/cronaca/rss" > UglyFeed/input/feeds.txt
+        echo "http://www.ansa.it/sito/notizie/cronaca/cronaca_rss.xml" >> UglyFeed/input/feeds.txt
+        echo "http://www.repubblica.it/rss/cronaca/rss2.0.xml" >> UglyFeed/input/feeds.txt
+        echo "https://ilmanifesto.it/feed/" >> UglyFeed/input/feeds.txt
+        echo "https://tg24.sky.it/rss/tg24_cronaca.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.adnkronos.com/RSS_Cronaca.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilfattoquotidiano.it/feed/" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilfoglio.it/cronaca/rss.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilgiorno.it/rss" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilmattino.it/rss/" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilmessaggero.it/rss/cronaca.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilrestodelcarlino.it/rss" >> UglyFeed/input/feeds.txt
+        echo "https://www.ilsole24ore.com/rss/italia--attualita.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.lanazione.it/rss" >> UglyFeed/input/feeds.txt
+        echo "https://www.lastampa.it/rss/cronache.xml" >> UglyFeed/input/feeds.txt
+        echo "https://www.tgcom24.mediaset.it/rss/cronaca.xml" >> UglyFeed/input/feeds.txt
+        # Add more feeds as needed...
+
+    # Step 4: Install Python dependencies
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r UglyFeed/requirements.txt
 
-    # Step 4: Execute `main.py` to aggregate and process feeds
+    # Step 5: Execute `main.py` to aggregate and process feeds
     - name: Run main.py
       run: |
         cd UglyFeed
         python main.py
 
-    # Step 5: Execute `llm_processor.py` to rewrite the content
+    # Step 6: Execute `llm_processor.py` to rewrite the content
     - name: Run llm_processor.py
       run: |
         cd UglyFeed
         python llm_processor.py
 
-    # Step 6: Execute `json2rss.py` to convert JSON to RSS
+    # Step 7: Execute `json2rss.py` to convert JSON to RSS
     - name: Run json2rss.py
       run: |
         cd UglyFeed
         python json2rss.py
 
-    # Step 7: Execute `deploy_xml.py` to deploy final XML to `feeds` directory
+    # Step 8: Execute `deploy_xml.py` to deploy final XML to `feeds` directory
     - name: Run deploy_xml.py
       run: |
         cd UglyFeed
         python deploy_xml.py
 
-    # Step 8: Move the deployed XML to the 'feeds' directory in the `uglyfeed-cdn` repository
+    # Step 9: Move the deployed XML to the 'feeds' directory in the `uglyfeed-cdn` repository
     - name: Deploy to feeds directory
       run: |
         # Create `feeds` directory in the uglyfeed-cdn repository if it doesn't exist
@@ -84,4 +105,4 @@ jobs:
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/*.xml
         git commit -m "Deploy rewritten RSS feeds"
-        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ secrets.CDN_REPO }} HEAD:main
