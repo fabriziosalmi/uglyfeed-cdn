@@ -5,3 +5,5 @@ These valid XML feeds are automatically updated on a daily basis. You can proces
 - [Universe](https://github.com/fabriziosalmi/uglyfeed-cdn/blob/main/universe/README.md)
 
 > source content is retrieved by GitHub action using the `wikipedia` python package
+
+Please note that such content is intended just for testing the UglyFeed project and not as consistent RSS feed for end users.
