@@ -17,9 +17,8 @@ env:
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
 
 jobs:
-  rewrite-and-deploy:
+  setup:
     runs-on: ubuntu-latest
-
     steps:
     - name: Check out UglyFeed repository
       uses: actions/checkout@v3
@@ -54,11 +53,6 @@ jobs:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ env.CDN_REPO }}
 
-    - name: Debug config.yaml
-      run: |
-        echo "Contents of config.yaml after overriding with variables:"
-        cat UglyFeed/config.yaml
-
     - name: Overwrite input/feeds.txt
       run: |
         echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
@@ -87,6 +81,16 @@ jobs:
         python -c "import nltk; nltk.data.find('corpora/wordnet')"
         python -c "import spacy; spacy.load('it_core_news_sm')"
 
+  run-main:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+    - name: Check out UglyFeed repository
+      uses: actions/checkout@v3
+      with:
+        repository: fabriziosalmi/UglyFeed
+        path: UglyFeed
+
     - name: Run main.py
       run: |
         cd UglyFeed
@@ -102,6 +106,16 @@ jobs:
         else
           echo "Output directory is present and contains files."
         fi
+
+  run-llm-processor:
+    runs-on: ubuntu-latest
+    needs: run-main
+    steps:
+    - name: Check out UglyFeed repository
+      uses: actions/checkout@v3
+      with:
+        repository: fabriziosalmi/UglyFeed
+        path: UglyFeed
 
     - name: Inject Groq API Key into config.yaml
       run: |
@@ -128,10 +142,30 @@ jobs:
           echo "Rewritten directory is present and contains files."
         fi
 
+  run-json2rss:
+    runs-on: ubuntu-latest
+    needs: run-llm-processor
+    steps:
+    - name: Check out UglyFeed repository
+      uses: actions/checkout@v3
+      with:
+        repository: fabriziosalmi/UglyFeed
+        path: UglyFeed
+
     - name: Run json2rss.py
       run: |
         cd UglyFeed
         python json2rss.py
+
+  run-deploy:
+    runs-on: ubuntu-latest
+    needs: run-json2rss
+    steps:
+    - name: Check out UglyFeed repository
+      uses: actions/checkout@v3
+      with:
+        repository: fabriziosalmi/UglyFeed
+        path: UglyFeed
 
     - name: Run deploy_xml.py
       run: |
