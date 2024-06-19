@@ -28,7 +28,7 @@ jobs:
         # Use yq to override values in config.yaml with GitHub Secrets and environment variables
         yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
         yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
-        yq eval '.github_token = strenv(GITHUB_TOKEN)' -i UglyFeed/config.yaml
+        yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
         yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
         yq eval '.folders.output_folder = "uglyfeeds"' -i UglyFeed/config.yaml
