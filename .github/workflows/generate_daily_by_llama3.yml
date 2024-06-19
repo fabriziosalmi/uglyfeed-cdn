@@ -87,12 +87,20 @@ jobs:
         echo "Verifying NLTK downloads..."
         echo "Contents of NLTK data directory:"
         ls -la ${{ env.NLTK_DATA }}
+        echo "Contents of corpora directory:"
+        ls -la ${{ env.NLTK_DATA }}/corpora
+
+    - name: Retry Download for WordNet if not found
+      run: |
+        if [ ! -d "${{ env.NLTK_DATA }}/corpora/wordnet" ]; then
+          echo "WordNet not found. Attempting to download again..."
+          python -m nltk.downloader -d ${{ env.NLTK_DATA }} wordnet
+        fi
+
+    - name: Verify WordNet Download
+      run: |
         echo "Contents of wordnet directory:"
         ls -la ${{ env.NLTK_DATA }}/corpora/wordnet
-        echo "Contents of stopwords directory:"
-        ls -la ${{ env.NLTK_DATA }}/corpora/stopwords
-        echo "Contents of omw-1.4 directory:"
-        ls -la ${{ env.NLTK_DATA }}/corpora/omw-1.4
 
     - name: Download spaCy model
       run: |
