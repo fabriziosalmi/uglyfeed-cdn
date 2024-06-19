@@ -36,7 +36,7 @@ jobs:
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         SELECTED_API: "Groq"  # Change as needed
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         GITHUB_REPO: "fabriziosalmi/uglyfeed-cdn"  # Adjust to your needs
 
     # Step 3: Install Python dependencies
