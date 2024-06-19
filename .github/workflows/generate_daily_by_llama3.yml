@@ -79,12 +79,19 @@ jobs:
 
     - name: Download NLTK resources
       run: |
+        echo "Downloading NLTK resources to $NLTK_DATA"
         python -m nltk.downloader -d ${{ env.NLTK_DATA }} wordnet stopwords omw-1.4
 
     - name: Verify NLTK downloads
       run: |
+        echo "Verifying NLTK downloads..."
+        echo "Contents of NLTK data directory:"
+        ls -la ${{ env.NLTK_DATA }}
+        echo "Contents of wordnet directory:"
         ls -la ${{ env.NLTK_DATA }}/corpora/wordnet
+        echo "Contents of stopwords directory:"
         ls -la ${{ env.NLTK_DATA }}/corpora/stopwords
+        echo "Contents of omw-1.4 directory:"
         ls -la ${{ env.NLTK_DATA }}/corpora/omw-1.4
 
     - name: Download spaCy model
