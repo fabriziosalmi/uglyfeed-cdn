@@ -12,13 +12,13 @@ env:
   SELECTED_API: "Groq"
   GROQ_API_URL: "https://api.groq.com/openai/v1/chat/completions"
   GROQ_MODEL: "llama3-8b-8192"
-  OUTPUT_FOLDER: "output"
-  REWRITTEN_FOLDER: "rewritten"
+  OUTPUT_FOLDER: ${{ github.workspace }}/output  # Use workspace directory
+  REWRITTEN_FOLDER: ${{ github.workspace }}/rewritten  # Use workspace directory
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
-  NLTK_DATA: ${{ github.workspace }}/nltk_data  # Setting a consistent NLTK data directory
+  NLTK_DATA: ${{ github.workspace }}/nltk_data  # Use workspace directory for NLTK data
 
 jobs:
-  setup:
+  setup-and-execute:
     runs-on: ubuntu-latest
     steps:
     - name: Check out UglyFeed repository
@@ -67,7 +67,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.11' # Set Python version to 3.11
+        python-version: '3.11'
 
     - name: Install Python dependencies
       run: |
@@ -110,43 +110,25 @@ jobs:
       run: |
         python -c "import spacy; spacy.load('it_core_news_sm')"
 
-  run-main:
-    runs-on: ubuntu-latest
-    needs: setup
-    steps:
-    - name: Check out UglyFeed repository
-      uses: actions/checkout@v3
-      with:
-        repository: fabriziosalmi/UglyFeed
-        path: UglyFeed
-
     - name: Run main.py
       run: |
         cd UglyFeed
         python main.py
       env:
         NLTK_DATA: ${{ env.NLTK_DATA }}
+        OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
+        REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
     - name: Check output directory
       run: |
         echo "Contents of the output directory after main.py execution:"
-        ls -la UglyFeed/output
-        if [ ! -d "UglyFeed/output" ] || [ -z "$(ls -A UglyFeed/output)" ]; then
+        ls -la ${{ env.OUTPUT_FOLDER }}
+        if [ ! -d "${{ env.OUTPUT_FOLDER }}" ] || [ -z "$(ls -A ${{ env.OUTPUT_FOLDER }})" ]; then
           echo "Output directory is empty or does not exist. Check main.py execution."
           exit 1
         else
           echo "Output directory is present and contains files."
         fi
-
-  run-llm-processor:
-    runs-on: ubuntu-latest
-    needs: run-main
-    steps:
-    - name: Check out UglyFeed repository
-      uses: actions/checkout@v3
-      with:
-        repository: fabriziosalmi/UglyFeed
-        path: UglyFeed
 
     - name: Inject Groq API Key into config.yaml
       run: |
@@ -163,27 +145,19 @@ jobs:
         python llm_processor.py
       env:
         NLTK_DATA: ${{ env.NLTK_DATA }}
+        OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
+        REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
     - name: Check rewritten directory
       run: |
         echo "Contents of the rewritten directory after llm_processor.py execution:"
-        ls -la UglyFeed/rewritten
-        if [ ! -d "UglyFeed/rewritten" ] || [ -z "$(ls -A UglyFeed/rewritten)" ]; then
+        ls -la ${{ env.REWRITTEN_FOLDER }}
+        if [ ! -d "${{ env.REWRITTEN_FOLDER }}" ] || [ -z "$(ls -A ${{ env.REWRITTEN_FOLDER }})" ]; then
           echo "Rewritten directory is empty or does not exist. Check llm_processor.py execution."
           exit 1
         else
           echo "Rewritten directory is present and contains files."
         fi
-
-  run-json2rss:
-    runs-on: ubuntu-latest
-    needs: run-llm-processor
-    steps:
-    - name: Check out UglyFeed repository
-      uses: actions/checkout@v3
-      with:
-        repository: fabriziosalmi/UglyFeed
-        path: UglyFeed
 
     - name: Run json2rss.py
       run: |
@@ -191,16 +165,8 @@ jobs:
         python json2rss.py
       env:
         NLTK_DATA: ${{ env.NLTK_DATA }}
-
-  run-deploy:
-    runs-on: ubuntu-latest
-    needs: run-json2rss
-    steps:
-    - name: Check out UglyFeed repository
-      uses: actions/checkout@v3
-      with:
-        repository: fabriziosalmi/UglyFeed
-        path: UglyFeed
+        OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
+        REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
     - name: Run deploy_xml.py
       run: |
@@ -208,11 +174,13 @@ jobs:
         python deploy_xml.py
       env:
         NLTK_DATA: ${{ env.NLTK_DATA }}
+        OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
+        REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
     - name: Deploy to feeds directory
       run: |
         mkdir -p ../uglyfeed-cdn/feeds
-        cp UglyFeed/uglyfeeds/*.xml ../uglyfeed-cdn/feeds/
+        cp ${{ env.OUTPUT_FOLDER }}/*.xml ../uglyfeed-cdn/feeds/
         cd ../uglyfeed-cdn
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
@@ -226,5 +194,5 @@ jobs:
       with:
         name: UglyFeed-outputs
         path: |
-          UglyFeed/output
-          UglyFeed/rewritten
+          ${{ env.OUTPUT_FOLDER }}
+          ${{ env.REWRITTEN_FOLDER }}
