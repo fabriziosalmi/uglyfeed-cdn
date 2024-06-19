@@ -50,6 +50,9 @@ jobs:
         echo "Contents of config.yaml after overriding with secrets:"
         cat UglyFeed/config.yaml
 
+        echo "Checking the eps value:"
+        yq eval '.similarity_options.eps' UglyFeed/config.yaml
+
     - name: Overwrite input/feeds.txt
       run: |
         echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
