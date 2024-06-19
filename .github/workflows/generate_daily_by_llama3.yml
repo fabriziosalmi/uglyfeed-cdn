@@ -12,10 +12,10 @@ env:
   SELECTED_API: "Groq"
   GROQ_API_URL: "https://api.groq.com/openai/v1/chat/completions"
   GROQ_MODEL: "llama3-8b-8192"
-  OUTPUT_FOLDER: ${{ github.workspace }}/output  # Use workspace directory
-  REWRITTEN_FOLDER: ${{ github.workspace }}/rewritten  # Use workspace directory
+  OUTPUT_FOLDER: ${{ github.workspace }}/UglyFeed/output  # Use workspace directory within UglyFeed repo
+  REWRITTEN_FOLDER: ${{ github.workspace }}/UglyFeed/rewritten  # Use workspace directory within UglyFeed repo
+  NLTK_DATA: ${{ github.workspace }}/UglyFeed/nltk_data  # Use workspace directory for NLTK data
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
-  NLTK_DATA: ${{ github.workspace }}/nltk_data  # Use workspace directory for NLTK data
 
 jobs:
   setup-and-execute:
@@ -95,6 +95,13 @@ jobs:
         if [ ! -d "${{ env.NLTK_DATA }}/corpora/wordnet" ]; then
           echo "WordNet not found. Attempting to download again..."
           python -m nltk.downloader -d ${{ env.NLTK_DATA }} wordnet
+        fi
+
+    - name: Manually unzip WordNet if still missing
+      run: |
+        if [ -f "${{ env.NLTK_DATA }}/corpora/wordnet.zip" ]; then
+          echo "Unzipping wordnet.zip manually..."
+          unzip -o ${{ env.NLTK_DATA }}/corpora/wordnet.zip -d ${{ env.NLTK_DATA }}/corpora/wordnet
         fi
 
     - name: Verify WordNet Download
@@ -186,9 +193,9 @@ jobs:
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/*.xml
         git commit -m "Deploy rewritten RSS feeds"
-        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ env.CDN_REPO }} HEAD:main
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ secrets.CDN_REPO }} HEAD:main
 
-    - name: Upload Artifacts for Debugging
+    - name: Upload artifacts for debugging (if needed)
       if: always()
       uses: actions/upload-artifact@v3
       with:
