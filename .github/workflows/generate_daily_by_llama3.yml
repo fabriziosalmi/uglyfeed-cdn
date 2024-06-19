@@ -175,24 +175,18 @@ jobs:
         OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
         REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
-    - name: Run deploy_xml.py
+    - name: Move uglyfeed.xml to feeds directory
       run: |
-        cd UglyFeed
-        python deploy_xml.py
-      env:
-        NLTK_DATA: ${{ env.NLTK_DATA }}
-        OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
-        REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
+        mkdir -p ../uglyfeed-cdn/feeds
+        mv ${{ env.OUTPUT_FOLDER }}/uglyfeed.xml ../uglyfeed-cdn/feeds/
 
     - name: Deploy to feeds directory
       run: |
-        mkdir -p ../uglyfeed-cdn/feeds
-        cp ${{ env.OUTPUT_FOLDER }}/*.xml ../uglyfeed-cdn/feeds/
         cd ../uglyfeed-cdn
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
-        git add feeds/*.xml
-        git commit -m "Deploy rewritten RSS feeds"
+        git add feeds/uglyfeed.xml
+        git commit -m "Deploy rewritten RSS feed: $(date +'%Y-%m-%d %H:%M:%S') - Model: ${{ env.GROQ_MODEL }}, API: ${{ env.SELECTED_API }}"
         git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ secrets.CDN_REPO }} HEAD:main
 
     - name: Upload artifacts for debugging (if needed)
