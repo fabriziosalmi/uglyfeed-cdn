@@ -84,4 +84,4 @@ jobs:
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/*.xml
         git commit -m "Deploy rewritten RSS feeds"
-        git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/fabriziosalmi/uglyfeed-cdn.git HEAD:main
