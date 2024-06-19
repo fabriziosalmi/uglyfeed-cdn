@@ -65,10 +65,12 @@ jobs:
         cd UglyFeed
         python main.py
 
-    - name: Check output directory
+    - name: Debug output contents
       run: |
         echo "Contents of the output directory after main.py execution:"
         ls -la UglyFeed/output
+        echo "Attempting to display contents of output JSON files:"
+        cat UglyFeed/output/*.json || echo "No JSON files found in output directory."
         if [ ! -d "UglyFeed/output" ] || [ -z "$(ls -A UglyFeed/output)" ]; then
           echo "Output directory is empty or does not exist. Check main.py execution."
           exit 1
