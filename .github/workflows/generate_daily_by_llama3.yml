@@ -90,6 +90,13 @@ jobs:
           echo "Output directory is present and contains files."
         fi
 
+    - name: Inject API Key before llm_processor.py
+      run: |
+        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
+
+      env:
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
     - name: Run llm_processor.py
       run: |
         cd UglyFeed
