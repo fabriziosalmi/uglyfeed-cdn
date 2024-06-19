@@ -53,6 +53,11 @@ jobs:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ env.CDN_REPO }}
 
+    - name: Debug config.yaml
+      run: |
+        echo "Contents of config.yaml after overriding with variables:"
+        cat UglyFeed/config.yaml
+
     - name: Overwrite input/feeds.txt
       run: |
         echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
@@ -70,7 +75,9 @@ jobs:
 
     - name: Download NLTK resources
       run: |
-        python -m nltk.downloader wordnet stopwords omw-1.4
+        python -m nltk.downloader -d $HOME/nltk_data wordnet stopwords omw-1.4
+      env:
+        NLTK_DATA: $HOME/nltk_data
 
     - name: Download spaCy model
       run: |
@@ -80,6 +87,8 @@ jobs:
       run: |
         python -c "import nltk; nltk.data.find('corpora/wordnet')"
         python -c "import spacy; spacy.load('it_core_news_sm')"
+      env:
+        NLTK_DATA: $HOME/nltk_data
 
   run-main:
     runs-on: ubuntu-latest
