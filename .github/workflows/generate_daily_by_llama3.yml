@@ -12,8 +12,6 @@ env:
   SELECTED_API: "Groq"
   GROQ_API_URL: "https://api.groq.com/openai/v1/chat/completions"
   GROQ_MODEL: "llama3-8b-8192"
-  OUTPUT_FOLDER: "output"
-  REWRITTEN_FOLDER: "rewritten"
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
 
 jobs:
@@ -36,8 +34,6 @@ jobs:
         yq eval '.api_config.selected_api = env(SELECTED_API)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_api_url = env(GROQ_API_URL)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_model = env(GROQ_MODEL)' -i UglyFeed/config.yaml
-        yq eval '.folders.output_folder = env(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
-        yq eval '.folders.rewritten_folder = env(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
         yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
         yq eval '.github_repo = env(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
