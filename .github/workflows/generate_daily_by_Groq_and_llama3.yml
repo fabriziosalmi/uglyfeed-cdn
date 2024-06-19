@@ -1,4 +1,4 @@
-name: Rewrite Feeds and Deploy
+name: Rewrite Feeds and Deploy (Groq + llama3-8b-8192)
 
 on:
   schedule:
@@ -14,6 +14,7 @@ env:
   GROQ_MODEL: "llama3-8b-8192"
   OUTPUT_FOLDER: ${{ github.workspace }}/UglyFeed/output  # Use workspace directory within UglyFeed repo
   REWRITTEN_FOLDER: ${{ github.workspace }}/UglyFeed/rewritten  # Use workspace directory within UglyFeed repo
+  TEMP_DEPLOY_FOLDER: ${{ github.workspace }}/temp_deploy  # Temporary directory for deployment
   NLTK_DATA: ${{ github.workspace }}/UglyFeed/nltk_data  # Use workspace directory for NLTK data
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
 
@@ -175,19 +176,29 @@ jobs:
         OUTPUT_FOLDER: ${{ env.OUTPUT_FOLDER }}
         REWRITTEN_FOLDER: ${{ env.REWRITTEN_FOLDER }}
 
-    - name: Move uglyfeed.xml to feeds directory
+    - name: Create Temporary Deployment Directory
+      run: mkdir -p ${{ env.TEMP_DEPLOY_FOLDER }}
+
+    - name: Copy uglyfeed.xml to temporary deployment directory
+      run: |
+        cp ${{ env.OUTPUT_FOLDER }}/uglyfeed.xml ${{ env.TEMP_DEPLOY_FOLDER }}/
+        echo "Contents of the temporary deployment directory:"
+        ls -la ${{ env.TEMP_DEPLOY_FOLDER }}
+
+    - name: Move uglyfeed.xml to feeds directory in CDN repo
       run: |
         mkdir -p ../uglyfeed-cdn/feeds
-        mv ${{ env.OUTPUT_FOLDER }}/uglyfeed.xml ../uglyfeed-cdn/feeds/
-
-    - name: Deploy to feeds directory
-      run: |
+        mv ${{ env.TEMP_DEPLOY_FOLDER }}/uglyfeed.xml ../uglyfeed-cdn/feeds/
         cd ../uglyfeed-cdn
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/uglyfeed.xml
-        git commit -m "Deploy rewritten RSS feed: $(date +'%Y-%m-%d %H:%M:%S') - Model: ${{ env.GROQ_MODEL }}, API: ${{ env.SELECTED_API }}"
+        datetime=$(date '+%Y-%m-%d %H:%M:%S')
+        git commit -m "Deploy rewritten RSS feed for ${datetime} using ${GROQ_MODEL} via ${SELECTED_API}"
         git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ secrets.CDN_REPO }} HEAD:main
+      env:
+        GROQ_MODEL: ${{ env.GROQ_MODEL }}
+        SELECTED_API: ${{ env.SELECTED_API }}
 
     - name: Upload artifacts for debugging (if needed)
       if: always()
