@@ -1,10 +1,8 @@
 name: Rewrite Feeds and Deploy
 
 on:
-  # Schedule the workflow to run daily at 07:00 UTC
   schedule:
     - cron: '0 7 * * *'
-  # Allow the workflow to be triggered manually
   workflow_dispatch:
 
 jobs:
@@ -12,32 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Check out the `UglyFeed` repository
     - name: Check out UglyFeed repository
       uses: actions/checkout@v3
       with:
         repository: fabriziosalmi/UglyFeed
         path: UglyFeed
 
-    # Step 2: Override `config.yaml` parameters using secrets
     - name: Override config.yaml with secrets
       run: |
-        # Backup original config.yaml
         cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
-
-        # Use yq to override values in config.yaml with GitHub Secrets and environment variables
         yq eval '.similarity_threshold = strenv(SIMILARITY_THRESHOLD)' -i UglyFeed/config.yaml
         yq eval '.similarity_options.min_samples = strenv(MIN_SAMPLES)' -i UglyFeed/config.yaml
         yq eval '.similarity_options.eps = strenv(EPS)' -i UglyFeed/config.yaml
-        
         yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
         yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_model = strenv(GROQ_MODEL)' -i UglyFeed/config.yaml
-
         yq eval '.folders.output_folder = strenv(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
         yq eval '.folders.rewritten_folder = strenv(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
-        
         yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
         yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
@@ -55,53 +45,58 @@ jobs:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ secrets.CDN_REPO }}
 
-    # Step 3: Overwrite the input/feeds.txt file with the new feeds list
     - name: Overwrite input/feeds.txt
       run: |
-        echo "https://example.com/feed1.xml" > UglyFeed/input/feeds.txt
-        echo "https://example.com/feed2.xml" >> UglyFeed/input/feeds.txt
-        # Add more feeds as needed...
+        echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
+        echo "https://feeds.bbci.co.uk/news/rss.xml" >> UglyFeed/input/feeds.txt
 
-    # Step 4: Install Python dependencies
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r UglyFeed/requirements.txt
 
-    # Step 5: Execute `main.py` to aggregate and process feeds
     - name: Run main.py
       run: |
         cd UglyFeed
         python main.py
 
-    # Step 6: Execute `llm_processor.py` to rewrite the content
+    - name: Check output directory
+      run: |
+        if [ ! -d "UglyFeed/output" ] || [ -z "$(ls -A UglyFeed/output)" ]; then
+          echo "Output directory is empty or does not exist. Check main.py execution."
+          exit 1
+        else
+          echo "Output directory is present and contains files."
+        fi
+
     - name: Run llm_processor.py
       run: |
         cd UglyFeed
         python llm_processor.py
 
-    # Step 7: Execute `json2rss.py` to convert JSON to RSS
+    - name: Check rewritten directory
+      run: |
+        if [ ! -d "UglyFeed/rewritten" ] || [ -z "$(ls -A UglyFeed/rewritten)" ]; then
+          echo "Rewritten directory is empty or does not exist. Check llm_processor.py execution."
+          exit 1
+        else
+          echo "Rewritten directory is present and contains files."
+        fi
+
     - name: Run json2rss.py
       run: |
         cd UglyFeed
         python json2rss.py
 
-    # Step 8: Execute `deploy_xml.py` to deploy final XML to `feeds` directory
     - name: Run deploy_xml.py
       run: |
         cd UglyFeed
         python deploy_xml.py
 
-    # Step 9: Move the deployed XML to the 'feeds' directory in the `uglyfeed-cdn` repository
     - name: Deploy to feeds directory
       run: |
-        # Create `feeds` directory in the uglyfeed-cdn repository if it doesn't exist
         mkdir -p ../uglyfeed-cdn/feeds
-
-        # Copy the deployed XML files from `uglyfeeds` to `feeds` directory
         cp UglyFeed/uglyfeeds/*.xml ../uglyfeed-cdn/feeds/
-
-        # Commit and push the changes to the `uglyfeed-cdn` repository
         cd ../uglyfeed-cdn
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
