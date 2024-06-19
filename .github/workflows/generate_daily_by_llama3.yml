@@ -20,8 +20,8 @@ jobs:
       run: |
         cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
         yq eval '.similarity_threshold = strenv(SIMILARITY_THRESHOLD)' -i UglyFeed/config.yaml
-        yq eval '.similarity_options.min_samples = strenv(MIN_SAMPLES)' -i UglyFeed/config.yaml
-        yq eval '.similarity_options.eps = strenv(EPS)' -i UglyFeed/config.yaml
+        yq eval '.min_samples = strenv(MIN_SAMPLES)' -i UglyFeed/config.yaml
+        yq eval '.eps = strenv(EPS)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
         yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i UglyFeed/config.yaml
