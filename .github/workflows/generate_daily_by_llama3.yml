@@ -33,17 +33,17 @@ jobs:
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
 
       env:
-        SIMILARITY_THRESHOLD: ${{ secrets.SIMILARITY_THRESHOLD }}
-        MIN_SAMPLES: ${{ secrets.MIN_SAMPLES }}
-        EPS: ${{ secrets.EPS }}
+        SIMILARITY_THRESHOLD: ${{ vars.SIMILARITY_THRESHOLD }}
+        MIN_SAMPLES: ${{ vars.MIN_SAMPLES }}
+        EPS: ${{ vars.EPS }}
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        SELECTED_API: ${{ secrets.SELECTED_API }}
-        GROQ_API_URL: ${{ secrets.GROQ_API_URL }}
-        GROQ_MODEL: ${{ secrets.GROQ_MODEL }}
-        OUTPUT_FOLDER: ${{ secrets.OUTPUT_FOLDER }}
-        REWRITTEN_FOLDER: ${{ secrets.REWRITTEN_FOLDER }}
+        SELECTED_API: ${{ vars.SELECTED_API }}
+        GROQ_API_URL: ${{ vars.GROQ_API_URL }}
+        GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+        OUTPUT_FOLDER: ${{ vars.OUTPUT_FOLDER }}
+        REWRITTEN_FOLDER: ${{ vars.REWRITTEN_FOLDER }}
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
-        CDN_REPO: ${{ secrets.CDN_REPO }}
+        CDN_REPO: ${{ vars.CDN_REPO }}
 
     - name: Debug config.yaml
       run: |
