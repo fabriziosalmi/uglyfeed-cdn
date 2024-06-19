@@ -5,6 +5,17 @@ on:
     - cron: '0 7 * * *'
   workflow_dispatch:
 
+env:
+  SIMILARITY_THRESHOLD: 0.66
+  MIN_SAMPLES: 2
+  EPS: 0.66
+  SELECTED_API: "Groq"
+  GROQ_API_URL: "https://api.groq.com/openai/v1/chat/completions"
+  GROQ_MODEL: "llama3-8b-8192"
+  OUTPUT_FOLDER: "output"
+  REWRITTEN_FOLDER: "rewritten"
+  CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
+
 jobs:
   rewrite-and-deploy:
     runs-on: ubuntu-latest
@@ -16,38 +27,24 @@ jobs:
         repository: fabriziosalmi/UglyFeed
         path: UglyFeed
 
-    - name: Override config.yaml with secrets
+    - name: Override config.yaml with variables
       run: |
         cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
-        yq eval '.similarity_threshold = strenv(SIMILARITY_THRESHOLD)' -i UglyFeed/config.yaml
-        yq eval '.similarity_options.min_samples = strenv(MIN_SAMPLES)' -i UglyFeed/config.yaml
-        yq eval '.similarity_options.eps = strenv(EPS)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
-        yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_model = strenv(GROQ_MODEL)' -i UglyFeed/config.yaml
-        yq eval '.folders.output_folder = strenv(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
-        yq eval '.folders.rewritten_folder = strenv(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
+        yq eval '.similarity_threshold = env(SIMILARITY_THRESHOLD)' -i UglyFeed/config.yaml
+        yq eval '.similarity_options.min_samples = env(MIN_SAMPLES)' -i UglyFeed/config.yaml
+        yq eval '.similarity_options.eps = env(EPS)' -i UglyFeed/config.yaml
+        yq eval '.api_config.selected_api = env(SELECTED_API)' -i UglyFeed/config.yaml
+        yq eval '.api_config.groq_api_url = env(GROQ_API_URL)' -i UglyFeed/config.yaml
+        yq eval '.api_config.groq_model = env(GROQ_MODEL)' -i UglyFeed/config.yaml
+        yq eval '.folders.output_folder = env(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
+        yq eval '.folders.rewritten_folder = env(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
         yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
-        yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
+        yq eval '.github_repo = env(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
-
-      env:
-        SIMILARITY_THRESHOLD: ${{ vars.SIMILARITY_THRESHOLD }}
-        MIN_SAMPLES: ${{ vars.MIN_SAMPLES }}
-        EPS: ${{ vars.EPS }}
-        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        SELECTED_API: ${{ vars.SELECTED_API }}
-        GROQ_API_URL: ${{ vars.GROQ_API_URL }}
-        GROQ_MODEL: ${{ vars.GROQ_MODEL }}
-        OUTPUT_FOLDER: ${{ vars.OUTPUT_FOLDER }}
-        REWRITTEN_FOLDER: ${{ vars.REWRITTEN_FOLDER }}
-        GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
-        CDN_REPO: ${{ vars.CDN_REPO }}
 
     - name: Debug config.yaml
       run: |
-        echo "Contents of config.yaml after overriding with secrets:"
+        echo "Contents of config.yaml after overriding with variables:"
         cat UglyFeed/config.yaml
 
         echo "Checking the eps value:"
@@ -114,4 +111,4 @@ jobs:
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/*.xml
         git commit -m "Deploy rewritten RSS feeds"
-        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ secrets.CDN_REPO }} HEAD:main
+        git push https://x-access-token:${{ secrets.GENERATOR_TOKEN }}@github.com/${{ env.CDN_REPO }} HEAD:main
