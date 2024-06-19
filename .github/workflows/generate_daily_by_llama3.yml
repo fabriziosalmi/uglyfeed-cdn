@@ -15,6 +15,7 @@ env:
   OUTPUT_FOLDER: "output"
   REWRITTEN_FOLDER: "rewritten"
   CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
+  NLTK_DATA: ${{ github.workspace }}/nltk_data  # Setting a consistent NLTK data directory
 
 jobs:
   setup:
@@ -73,22 +74,26 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r UglyFeed/requirements.txt
 
+    - name: Create NLTK Data Directory
+      run: mkdir -p ${{ env.NLTK_DATA }}
+
     - name: Download NLTK resources
       run: |
-        python -m nltk.downloader -d $HOME/nltk_data wordnet stopwords omw-1.4
-      env:
-        NLTK_DATA: $HOME/nltk_data
+        python -m nltk.downloader -d ${{ env.NLTK_DATA }} wordnet stopwords omw-1.4
+
+    - name: Verify NLTK downloads
+      run: |
+        ls -la ${{ env.NLTK_DATA }}/corpora/wordnet
+        ls -la ${{ env.NLTK_DATA }}/corpora/stopwords
+        ls -la ${{ env.NLTK_DATA }}/corpora/omw-1.4
 
     - name: Download spaCy model
       run: |
         python -m spacy download it_core_news_sm
 
-    - name: Verify NLTK and spaCy setup
+    - name: Verify spaCy setup
       run: |
-        python -c "import nltk; nltk.data.find('corpora/wordnet')"
         python -c "import spacy; spacy.load('it_core_news_sm')"
-      env:
-        NLTK_DATA: $HOME/nltk_data
 
   run-main:
     runs-on: ubuntu-latest
@@ -104,6 +109,8 @@ jobs:
       run: |
         cd UglyFeed
         python main.py
+      env:
+        NLTK_DATA: ${{ env.NLTK_DATA }}
 
     - name: Check output directory
       run: |
@@ -139,6 +146,8 @@ jobs:
       run: |
         cd UglyFeed
         python llm_processor.py
+      env:
+        NLTK_DATA: ${{ env.NLTK_DATA }}
 
     - name: Check rewritten directory
       run: |
@@ -165,6 +174,8 @@ jobs:
       run: |
         cd UglyFeed
         python json2rss.py
+      env:
+        NLTK_DATA: ${{ env.NLTK_DATA }}
 
   run-deploy:
     runs-on: ubuntu-latest
@@ -180,6 +191,8 @@ jobs:
       run: |
         cd UglyFeed
         python deploy_xml.py
+      env:
+        NLTK_DATA: ${{ env.NLTK_DATA }}
 
     - name: Deploy to feeds directory
       run: |
