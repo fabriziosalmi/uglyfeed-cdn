@@ -45,6 +45,11 @@ jobs:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ secrets.CDN_REPO }}
 
+    - name: Debug config.yaml
+      run: |
+        echo "Contents of config.yaml after overriding with secrets:"
+        cat UglyFeed/config.yaml
+
     - name: Overwrite input/feeds.txt
       run: |
         echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
@@ -62,6 +67,8 @@ jobs:
 
     - name: Check output directory
       run: |
+        echo "Contents of the output directory after main.py execution:"
+        ls -la UglyFeed/output
         if [ ! -d "UglyFeed/output" ] || [ -z "$(ls -A UglyFeed/output)" ]; then
           echo "Output directory is empty or does not exist. Check main.py execution."
           exit 1
@@ -76,6 +83,8 @@ jobs:
 
     - name: Check rewritten directory
       run: |
+        echo "Contents of the rewritten directory after llm_processor.py execution:"
+        ls -la UglyFeed/rewritten
         if [ ! -d "UglyFeed/rewritten" ] || [ -z "$(ls -A UglyFeed/rewritten)" ]; then
           echo "Rewritten directory is empty or does not exist. Check llm_processor.py execution."
           exit 1
