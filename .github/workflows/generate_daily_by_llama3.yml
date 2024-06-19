@@ -74,10 +74,13 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r UglyFeed/requirements.txt
 
-    - name: Download NLTK resources and spaCy models
+    - name: Download NLTK resources
       run: |
         python -m nltk.downloader wordnet stopwords omw-1.4
-        python -c "import spacy; spacy.cli.download('it_core_news_sm')"
+
+    - name: Download spaCy model
+      run: |
+        python -m spacy download it_core_news_sm
 
     - name: Verify NLTK and spaCy setup
       run: |
