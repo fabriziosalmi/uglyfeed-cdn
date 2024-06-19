@@ -5,6 +5,17 @@ on:
     - cron: '0 7 * * *' # Schedule to run daily at 07:00 UTC
   workflow_dispatch: # Allow manual triggering
 
+env:
+  SIMILARITY_THRESHOLD: 0.66
+  MIN_SAMPLES: 2
+  EPS: 0.66
+  SELECTED_API: "Groq"
+  GROQ_API_URL: "https://api.groq.com/openai/v1/chat/completions"
+  GROQ_MODEL: "llama3-8b-8192"
+  OUTPUT_FOLDER: "output"
+  REWRITTEN_FOLDER: "rewritten"
+  CDN_REPO: "fabriziosalmi/uglyfeed-cdn"
+
 jobs:
   rewrite-and-deploy:
     runs-on: ubuntu-latest
