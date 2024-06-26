@@ -75,11 +75,6 @@ jobs:
         echo "Contents of config.yaml after overriding with secrets:"
         cat UglyFeed/config.yaml
 
-    - name: Overwrite input/feeds.txt
-      run: |
-        echo "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" > UglyFeed/input/feeds.txt
-        echo "https://feeds.bbci.co.uk/news/rss.xml" >> UglyFeed/input/feeds.txt
-
     - name: Run main.py
       run: |
         cd UglyFeed
