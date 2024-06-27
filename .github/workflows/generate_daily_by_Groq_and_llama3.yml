@@ -69,9 +69,9 @@ jobs:
     - name: Override config.yaml with secrets
       run: |
         cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
-        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
         yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i UglyFeed/config.yaml
+        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
         yq eval '.api_config.groq_model = strenv(GROQ_MODEL)' -i UglyFeed/config.yaml
         yq eval '.folders.output_folder = strenv(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
         yq eval '.folders.rewritten_folder = strenv(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
@@ -86,9 +86,9 @@ jobs:
 
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-        SELECTED_API: ${{ vars.SELECTED_API }}
+        SELECTED_API: "Groq"
         GROQ_API_URL: ${{ vars.GROQ_API_URL }}
-        GROQ_MODEL: ${{ vars.GROQ_MODEL }}
+        GROQ_MODEL: "llama3-8b-8192"
         OUTPUT_FOLDER: ${{ github.workspace }}/UglyFeed/output
         REWRITTEN_FOLDER: ${{ github.workspace }}/UglyFeed/rewritten
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
