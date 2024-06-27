@@ -10,17 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Create temporary directory
+      run: mkdir -p ${{ runner.temp }}/workdir
+
     - name: Check out UglyFeed repository
       uses: actions/checkout@v3
       with:
         repository: fabriziosalmi/UglyFeed
-        path: UglyFeed
+        path: ${{ runner.temp }}/workdir/UglyFeed
 
     - name: Check out uglyfeed-cdn repository
       uses: actions/checkout@v3
       with:
         repository: fabriziosalmi/uglyfeed-cdn
-        path: uglyfeed-cdn
+        path: ${{ runner.temp }}/workdir/uglyfeed-cdn
 
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -30,7 +33,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r UglyFeed/requirements.txt
+        pip install -r ${{ runner.temp }}/workdir/UglyFeed/requirements.txt
 
     - name: Download and verify NLTK data
       run: |
@@ -68,35 +71,34 @@ jobs:
 
     - name: Override config.yaml with secrets
       run: |
-        cp UglyFeed/config.yaml UglyFeed/config.yaml.bak
-        yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i UglyFeed/config.yaml
-        yq eval '.api_config.groq_model = strenv(GROQ_MODEL)' -i UglyFeed/config.yaml
-        yq eval '.folders.output_folder = strenv(OUTPUT_FOLDER)' -i UglyFeed/config.yaml
-        yq eval '.folders.rewritten_folder = strenv(REWRITTEN_FOLDER)' -i UglyFeed/config.yaml
-        yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
-        yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
-        yq eval '.enable_github = true' -i UglyFeed/config.yaml
+        cp ${{ runner.temp }}/workdir/UglyFeed/config.yaml ${{ runner.temp }}/workdir/UglyFeed/config.yaml.bak
+        yq eval '.api_config.selected_api = strenv(SELECTED_API)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.api_config.groq_api_url = strenv(GROQ_API_URL)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.api_config.groq_api_key = strenv(GROQ_API_KEY)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.api_config.groq_model = strenv(GROQ_MODEL)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.folders.output_folder = strenv(OUTPUT_FOLDER)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.folders.rewritten_folder = strenv(REWRITTEN_FOLDER)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.github_repo = strenv(CDN_REPO)' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
+        yq eval '.enable_github = true' -i ${{ runner.temp }}/workdir/UglyFeed/config.yaml
 
     - name: Debug config.yaml after overriding
       run: |
         echo "Contents of config.yaml after overriding with secrets:"
-        cat UglyFeed/config.yaml
-
+        cat ${{ runner.temp }}/workdir/UglyFeed/config.yaml
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         SELECTED_API: "Groq"
         GROQ_API_URL: ${{ vars.GROQ_API_URL }}
         GROQ_MODEL: "llama3-8b-8192"
-        OUTPUT_FOLDER: ${{ github.workspace }}/UglyFeed/output
-        REWRITTEN_FOLDER: ${{ github.workspace }}/UglyFeed/rewritten
+        OUTPUT_FOLDER: ${{ runner.temp }}/workdir/UglyFeed/output
+        REWRITTEN_FOLDER: ${{ runner.temp }}/workdir/UglyFeed/rewritten
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ vars.CDN_REPO }}
 
     - name: Run scripts
       run: |
-        cd UglyFeed
+        cd ${{ runner.temp }}/workdir/UglyFeed
         echo "Creating folders"
         mkdir -p output
         mkdir -p rewritten
@@ -112,19 +114,19 @@ jobs:
     - name: Prepare for deployment
       run: |
         echo "Creating temp_deploy directory..."
-        mkdir -p ${{ github.workspace }}/temp_deploy
+        mkdir -p ${{ runner.temp }}/workdir/temp_deploy
         echo "Copying final XML to temp_deploy directory..."
-        cp ${{ github.workspace }}/UglyFeed/uglyfeeds/uglyfeed.xml ${{ github.workspace }}/temp_deploy/
+        cp ${{ runner.temp }}/workdir/UglyFeed/uglyfeeds/uglyfeed.xml ${{ runner.temp }}/workdir/temp_deploy/
 
     - name: Copy to feeds directory in uglyfeed-cdn repo
       run: |
         echo "Copying the final XML to the feeds directory..."
-        mkdir -p ${{ github.workspace }}/uglyfeed-cdn/feeds
-        cp ${{ github.workspace }}/temp_deploy/uglyfeed.xml ${{ github.workspace }}/uglyfeed-cdn/feeds/
+        mkdir -p ${{ runner.temp }}/workdir/uglyfeed-cdn/feeds
+        cp ${{ runner.temp }}/workdir/temp_deploy/uglyfeed.xml ${{ runner.temp }}/workdir/uglyfeed-cdn/feeds/
 
     - name: Commit and push to uglyfeed-cdn
       run: |
-        cd ${{ github.workspace }}/uglyfeed-cdn
+        cd ${{ runner.temp }}/workdir/uglyfeed-cdn
         git config --local user.name "fabriziosalmi"
         git config --local user.email "fabrizio.salmi@gmail.com"
         git add feeds/uglyfeed.xml
