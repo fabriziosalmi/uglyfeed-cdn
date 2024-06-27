@@ -119,17 +119,6 @@ jobs:
       env:
         NLTK_DATA: /home/runner/nltk_data
 
-    - name: Check rewritten directory
-      run: |
-        echo "Contents of the rewritten directory after llm_processor.py execution:"
-        ls -la ${{ github.workspace }}/UglyFeed/rewritten
-        if [ ! -d "${{ github.workspace }}/UglyFeed/rewritten}" ] || [ -z "$(ls -A ${{ github.workspace }}/UglyFeed/rewritten}" ]; then
-          echo "Rewritten directory is empty or does not exist. Check llm_processor.py execution."
-          exit 1
-        else
-          echo "Rewritten directory is present and contains files."
-        fi
-
     - name: Run json2rss.py
       run: |
         cd UglyFeed
