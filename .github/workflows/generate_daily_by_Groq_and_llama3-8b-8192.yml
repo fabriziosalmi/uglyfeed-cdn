@@ -10,20 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Create temporary directory
-      run: mkdir -p ${{ runner.temp }}/workdir
-
     - name: Check out UglyFeed repository
       uses: actions/checkout@v3
       with:
         repository: fabriziosalmi/UglyFeed
-        path: ${{ runner.temp }}/workdir/UglyFeed
+        path: UglyFeed
 
     - name: Check out uglyfeed-cdn repository
       uses: actions/checkout@v3
       with:
         repository: fabriziosalmi/uglyfeed-cdn
-        path: ${{ runner.temp }}/workdir/uglyfeed-cdn
+        path: uglyfeed-cdn
+
+    - name: Create temporary directory
+      run: mkdir -p ${{ runner.temp }}/workdir
+
+    - name: Move repositories to temporary directory
+      run: |
+        mv ${{ github.workspace }}/UglyFeed ${{ runner.temp }}/workdir/UglyFeed
+        mv ${{ github.workspace }}/uglyfeed-cdn ${{ runner.temp }}/workdir/uglyfeed-cdn
 
     - name: Set up Python
       uses: actions/setup-python@v4
