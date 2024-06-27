@@ -115,7 +115,7 @@ jobs:
     - name: Run llm_processor.py
       run: |
         cd UglyFeed
-        python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key $GROQ_API_KEY 
+        python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} 
       env:
         NLTK_DATA: /home/runner/nltk_data
 
