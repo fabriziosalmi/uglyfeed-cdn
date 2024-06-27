@@ -97,9 +97,15 @@ jobs:
     - name: Run scripts
       run: |
         cd UglyFeed
-        python main.py
-        python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} --rewritten_folder "rewritten"
-        python json2rss.py
+        echo "Creating folders"
+        mkdir -p output
+        mkdir -p rewritten
+        echo "Checking folders:"
+        find . -type d -name output
+        find . -type d -name rewritten
+        echo "Ugly is starting.."
+        python main.py && python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} --rewritten_folder "rewritten" && python json2rss.py
+        echo "Ugly has done!"
       env:
         NLTK_DATA: /home/runner/nltk_data
 
