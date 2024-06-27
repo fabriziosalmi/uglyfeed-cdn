@@ -43,12 +43,27 @@ jobs:
 
     - name: Set defaults for missing variables
       run: |
+        echo "Setting defaults for missing environment variables..."
         if [ -z "${N_CLUSTERS}" ]; then
+          echo "N_CLUSTERS is not set, defaulting to 5"
           export N_CLUSTERS=5
+        else
+          echo "N_CLUSTERS is set to '${N_CLUSTERS}'"
         fi
         if [ -z "${LINKAGE}" ]; then
+          echo "LINKAGE is not set, defaulting to 'average'"
           export LINKAGE="average"
+        else
+          echo "LINKAGE is set to '${LINKAGE}'"
         fi
+
+    - name: Debug environment variables
+      run: |
+        echo "SIMILARITY_THRESHOLD=${SIMILARITY_THRESHOLD}"
+        echo "MIN_SAMPLES=${MIN_SAMPLES}"
+        echo "EPS=${EPS}"
+        echo "N_CLUSTERS=${N_CLUSTERS}"
+        echo "LINKAGE=${LINKAGE}"
 
     - name: Override config.yaml with secrets
       run: |
@@ -68,6 +83,11 @@ jobs:
         yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
 
+    - name: Debug config.yaml after overriding
+      run: |
+        echo "Contents of config.yaml after overriding with secrets:"
+        cat UglyFeed/config.yaml
+
       env:
         SIMILARITY_THRESHOLD: ${{ vars.SIMILARITY_THRESHOLD }}
         MIN_SAMPLES: ${{ vars.MIN_SAMPLES }}
@@ -82,11 +102,6 @@ jobs:
         REWRITTEN_FOLDER: ${{ github.workspace }}/UglyFeed/rewritten
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ vars.CDN_REPO }}
-
-    - name: Debug config.yaml
-      run: |
-        echo "Contents of config.yaml after overriding with secrets:"
-        cat UglyFeed/config.yaml
 
     - name: Run main.py
       run: |
