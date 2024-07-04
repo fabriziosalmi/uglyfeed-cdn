@@ -58,7 +58,7 @@ jobs:
           /bin/bash -c "
             cd /app/UglyFeed &&
             python main.py &&
-            python llm_processor.py --api Groq --model llama3-8b-8192 --api_url $GROQ_API_URL --api_key $GROQ_API_KEY --rewritten_folder rewritten &&
+            python llm_processor.py --api Groq --model llama3-8b-8192 --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key $GROQ_API_KEY --rewritten_folder rewritten &&
             python json2rss.py
           "
 
