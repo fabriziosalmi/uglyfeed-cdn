@@ -103,8 +103,13 @@ jobs:
         find . -type d -name output
         find . -type d -name rewritten
         echo "Ugly is starting.."
-        python main.py && python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} --rewritten_folder "rewritten" && python json2rss.py
-        echo "Ugly has done!"
+        python main.py
+        python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} --rewritten_folder "rewritten"
+        python json2rss.py
+        echo "-------------------------"
+        # Debug to check if the file is created
+        echo "Checking if uglyfeed.xml is created..."
+        find . -name uglyfeed.xml
       env:
         NLTK_DATA: /home/runner/nltk_data
 
