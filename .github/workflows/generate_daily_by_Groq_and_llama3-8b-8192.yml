@@ -22,49 +22,8 @@ jobs:
         repository: fabriziosalmi/uglyfeed-cdn
         path: uglyfeed-cdn
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r UglyFeed/requirements.txt
-
-    - name: Download and verify NLTK data
-      run: |
-        mkdir -p /home/runner/nltk_data
-        python -m nltk.downloader -d /home/runner/nltk_data wordnet stopwords omw-1.4
-        echo "Verifying NLTK downloads..."
-        ls -la /home/runner/nltk_data/corpora
-      env:
-        NLTK_DATA: /home/runner/nltk_data
-
-    - name: Set defaults for missing variables
-      run: |
-        echo "Setting defaults for missing environment variables..."
-        if [ -z "${N_CLUSTERS}" ]; then
-          echo "N_CLUSTERS is not set, defaulting to 5"
-          export N_CLUSTERS=5
-        else
-          echo "N_CLUSTERS is set to '${N_CLUSTERS}'"
-        fi
-        if [ -z "${LINKAGE}" ]; then
-          echo "LINKAGE is not set, defaulting to 'average'"
-          export LINKAGE="average"
-        else
-          echo "LINKAGE is set to '${LINKAGE}'"
-        fi
-
-    - name: Debug environment variables
-      run: |
-        echo "SIMILARITY_THRESHOLD=${SIMILARITY_THRESHOLD}"
-        echo "MIN_SAMPLES=${MIN_SAMPLES}"
-        echo "EPS=${EPS}"
-        echo "N_CLUSTERS=${N_CLUSTERS}"
-        echo "LINKAGE=${LINKAGE}"
-        echo "SELECTED_API=${SELECTED_API}"
+    - name: Set up Docker
+      run: docker pull fabriziosalmi/uglyfeed
 
     - name: Override config.yaml with secrets
       run: |
@@ -78,11 +37,6 @@ jobs:
         yq eval '.github_token = strenv(GENERATOR_TOKEN)' -i UglyFeed/config.yaml
         yq eval '.github_repo = strenv(CDN_REPO)' -i UglyFeed/config.yaml
         yq eval '.enable_github = true' -i UglyFeed/config.yaml
-
-    - name: Debug config.yaml after overriding
-      run: |
-        echo "Contents of config.yaml after overriding with secrets:"
-        cat UglyFeed/config.yaml
       env:
         GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         SELECTED_API: "Groq"
@@ -93,25 +47,20 @@ jobs:
         GENERATOR_TOKEN: ${{ secrets.GENERATOR_TOKEN }}
         CDN_REPO: ${{ vars.CDN_REPO }}
 
-    - name: Run scripts
+    - name: Run UglyFeed Docker Container and Execute Scripts
       run: |
-        cd UglyFeed
-        echo "Creating folders"
-        mkdir -p output
-        mkdir -p rewritten
-        echo "Checking folders:"
-        find . -type d -name output
-        find . -type d -name rewritten
-        echo "Ugly is starting.."
-        python main.py
-        python llm_processor.py --api "Groq" --model "llama3-8b-8192" --api_url "https://api.groq.com/openai/v1/chat/completions" --api_key ${{ secrets.GROQ_API_KEY }} --rewritten_folder "rewritten"
-        python json2rss.py
-        echo "-------------------------"
-        # Debug to check if the file is created
-        echo "Checking if uglyfeed.xml is created..."
-        find . -name uglyfeed.xml
-      env:
-        NLTK_DATA: /home/runner/nltk_data
+        docker run --rm \
+          -v ${{ github.workspace }}/UglyFeed:/app/UglyFeed \
+          -v ${{ github.workspace }}/uglyfeed-cdn:/app/uglyfeed-cdn \
+          -e CONFIG_FILE=/app/UglyFeed/config.yaml \
+          -e FEEDS_FILE=/app/UglyFeed/input/feeds.txt \
+          fabriziosalmi/uglyfeed \
+          /bin/bash -c "
+            cd /app/UglyFeed &&
+            python main.py &&
+            python llm_processor.py --api Groq --model llama3-8b-8192 --api_url $GROQ_API_URL --api_key $GROQ_API_KEY --rewritten_folder rewritten &&
+            python json2rss.py
+          "
 
     - name: Prepare for deployment
       run: |
