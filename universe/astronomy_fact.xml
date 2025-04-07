@@ -1,3 +1,13 @@
-<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Quantum cosmology</title><description>Quantum cosmology is the attempt in theoretical physics to develop a quantum theory of the universe. This approach attempts to answer open questions of classical physical cosmology, particularly those related to the first phases of the universe.
-Classical cosmology is based on Albert Einstein's general theory of relativity (GTR or simply GR) which describes the evolution of the universe very well, as long as you do not approach the Big Bang. It is the gravitational singularity and the Planck time where relativity theory fails to provide what must be demanded of a final theory of space and time. Therefore, a theory is needed that integrates relativity theory and quantum theory. Such an approach is attempted for instance with loop quantum cosmology, loop quantum gravity, string theory and causal set theory.
-In quantum cosmology, the universe is treated as a wave function instead of classical spacetime.</description><link>https://en.wikipedia.org/wiki/Quantum_cosmology</link><pubDate>Sun, 06 Apr 2025 05:01:38 GMT</pubDate></item></channel></rss>
+<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Lambda-CDM model</title><description>The Lambda-CDM, Lambda cold dark matter, or ΛCDM model is a mathematical model of the Big Bang theory with three major components:
+
+a cosmological constant, denoted by lambda (Λ), associated with dark energy;
+the postulated cold dark matter, denoted by CDM;
+ordinary matter.
+It is the current standard model of Big Bang cosmology, as it is the simplest model that provides a reasonably good account of:
+
+the existence and structure of the cosmic microwave background;
+the large-scale structure in the distribution of galaxies;
+the observed abundances of hydrogen (including deuterium), helium, and lithium;
+the accelerating expansion of the universe observed in the light from distant galaxies and supernovae.
+The model assumes that general relativity is the correct theory of gravity on cosmological scales. It emerged in the late 1990s as a concordance cosmology, after a period when disparate observed properties of the universe appeared mutually inconsistent, and there was no consensus on the makeup of the energy density of the universe.
+The ΛCDM model has been successful in modeling broad collection of astronomical observations over decades. Remaining issues challenge the assumptions of the ΛCDM model and have led to many alternative models.</description><link>https://en.wikipedia.org/wiki/Lambda-CDM_model</link><pubDate>Mon, 07 Apr 2025 05:01:44 GMT</pubDate></item></channel></rss>
