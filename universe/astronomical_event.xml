@@ -1,2 +1,222 @@
-<rss version="2.0"><channel><title>Astronomical event of the Day</title><link>http://example.com/astronomical_event</link><description>RSS feed of the astronomical event of the day.</description><item><title>Leonidas I</title><description>Leonidas I (; Ancient Greek: Λεωνίδας, Leōnídas; born c. 540 BC; died 11 August 480 BC) was king of the Ancient Greek city-state of Sparta. He was the son of king Anaxandridas II and the 17th king of the Agiad dynasty, a Spartan royal house which claimed descent from the mythical demigod Heracles. Leonidas I ascended to the throne in c. 489 BC, succeeding his half-brother king Cleomenes I. He ruled jointly along with king Leotychidas until his death in 480 BC, when he was succeeded by his son, Pleistarchus. 
-At the  Second Greco-Persian War, Leonidas led the allied Greek forces in a last stand at the Battle of Thermopylae (480 BC), attempting to defend the pass from the invading Persian army, and was killed early during the third and last day of the battle. Leonidas entered myth as a hero and the leader of the 300 Spartans who died in battle at Thermopylae. While the Greeks lost this battle, they were able to expel the Persian invaders in the following year.</description><link>https://en.wikipedia.org/wiki/Leonidas_I</link><pubDate>Sun, 14 Sep 2025 05:01:59 GMT</pubDate></item></channel></rss>
+<rss version="2.0"><channel><title>Astronomical event of the Day</title><link>http://example.com/astronomical_event</link><description>RSS feed of the astronomical event of the day.</description><item><title>Ellipse</title><description>In mathematics, an ellipse is a plane curve surrounding two focal points, such that for all points on the curve, the sum of the two distances to the focal points is a constant. It generalizes a circle, which is the special type of ellipse in which the two focal points are the same. The elongation of an ellipse is measured by its eccentricity 
+  
+    
+      
+        e
+      
+    
+    {\displaystyle e}
+  
+, a number ranging from 
+  
+    
+      
+        e
+        =
+        0
+      
+    
+    {\displaystyle e=0}
+  
+ (the limiting case of a circle) to 
+  
+    
+      
+        e
+        =
+        1
+      
+    
+    {\displaystyle e=1}
+  
+ (the limiting case of infinite elongation, no longer an ellipse but a parabola).
+An ellipse has a simple algebraic solution for its area, but for its perimeter (also known as circumference), integration is required to obtain an exact solution.
+The largest and smallest diameters of an ellipse, also known as its width and height, are typically denoted 2a and 2b. An ellipse has four extreme points: two vertices at the endpoints of the major axis and two co-vertices at the endpoints of the minor axis.
+
+Analytically, the equation of a standard ellipse centered at the origin is:
+
+  
+    
+      
+        
+          
+            
+              x
+              
+                2
+              
+            
+            
+              a
+              
+                2
+              
+            
+          
+        
+        +
+        
+          
+            
+              y
+              
+                2
+              
+            
+            
+              b
+              
+                2
+              
+            
+          
+        
+        =
+        1.
+      
+    
+    {\displaystyle {\frac {x^{2}}{a^{2}}}+{\frac {y^{2}}{b^{2}}}=1.}
+  
+
+Assuming 
+  
+    
+      
+        a
+        ≥
+        b
+      
+    
+    {\displaystyle a\geq b}
+  
+, the foci are 
+  
+    
+      
+        (
+        ±
+        c
+        ,
+        0
+        )
+      
+    
+    {\displaystyle (\pm c,0)}
+  
+ where 
+  
+    
+      
+        c
+        =
+        
+          
+            
+              a
+              
+                2
+              
+            
+            −
+            
+              b
+              
+                2
+              
+            
+          
+        
+      
+    
+    {\textstyle c={\sqrt {a^{2}-b^{2}}}}
+  
+, called linear eccentricity, is the distance from the center to a focus. The standard parametric equation is:
+
+  
+    
+      
+        (
+        x
+        ,
+        y
+        )
+        =
+        (
+        a
+        cos
+        ⁡
+        (
+        t
+        )
+        ,
+        b
+        sin
+        ⁡
+        (
+        t
+        )
+        )
+        
+        
+          for
+        
+        
+        0
+        ≤
+        t
+        ≤
+        2
+        π
+        .
+      
+    
+    {\displaystyle (x,y)=(a\cos(t),b\sin(t))\quad {\text{for}}\quad 0\leq t\leq 2\pi .}
+  
+
+Ellipses are the closed type of conic section: a plane curve tracing the intersection of a cone with a plane (see figure). Ellipses have many similarities with the other two forms of conic sections, parabolas and hyperbolas, both of which are open and unbounded. An angled cross section of a right circular cylinder is also an ellipse.
+An ellipse may also be defined in terms of one focal point and a line outside the ellipse called the directrix: for all points on the ellipse, the ratio between the distance to the focus and the distance to the directrix is a constant, called the eccentricity:
+
+  
+    
+      
+        e
+        =
+        
+          
+            c
+            a
+          
+        
+        =
+        
+          
+            1
+            −
+            
+              
+                
+                  b
+                  
+                    2
+                  
+                
+                
+                  a
+                  
+                    2
+                  
+                
+              
+            
+          
+        
+        .
+      
+    
+    {\displaystyle e={\frac {c}{a}}={\sqrt {1-{\frac {b^{2}}{a^{2}}}}}.}
+  
+
+Ellipses are common in physics, astronomy and engineering. For example, the orbit of each planet in the Solar System is approximately an ellipse with the Sun at one focus point (more precisely, the focus is the barycenter of the Sun–planet pair). The same is true for moons orbiting planets and all other systems of two astronomical bodies. The shapes of planets and stars are often well described by ellipsoids. A circle viewed from a side angle looks like an ellipse: that is, the ellipse is the image of a circle under parallel or perspective projection. The ellipse is also the simplest Lissajous figure formed when the horizontal and vertical motions are sinusoids with the same frequency: a similar effect leads to elliptical polarization of light in optics.
+The name, ἔλλειψις (élleipsis, "omission"), was given by Apollonius of Perga in his Conics.
+
+</description><link>https://en.wikipedia.org/wiki/Ellipse</link><pubDate>Mon, 15 Sep 2025 05:02:12 GMT</pubDate></item></channel></rss>
