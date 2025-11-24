@@ -1,6 +1,5 @@
-<rss version="2.0"><channel><title>Star of the Day</title><link>http://example.com/star</link><description>RSS feed of the star of the day.</description><item><title>Star polygon</title><description>In geometry, a star polygon is a type of non-convex polygon. Regular star polygons have been studied in depth; while star polygons in general appear not to have been formally defined, certain notable ones can arise through truncation operations on regular simple or star polygons.
-Branko Grünbaum identified two primary usages of this terminology by Johannes Kepler, one corresponding to the regular star polygons with intersecting edges that do not generate new vertices, and the other one to the isotoxal concave simple polygons.
-Polygrams include polygons like the pentagram, but also compound figures like the hexagram.
-One definition of a star polygon, used in turtle graphics, is a polygon having q ≥ 2 turns (q is called the turning number or density), like in spirolaterals.
+<rss version="2.0"><channel><title>Star of the Day</title><link>http://example.com/star</link><description>RSS feed of the star of the day.</description><item><title>Binary system</title><description>A binary system is a system of two astronomical bodies of the same kind that are comparable in size. Definitions vary, but typically require the center of mass to be located outside of either object. (See animated examples.)
+The most common kinds of binary system are binary stars and binary asteroids, but brown dwarfs, planets, neutron stars, black holes and galaxies can also form binaries.
+A multiple system is similar but consists of three or more objects, for example triple stars and triple asteroids (a more common term than 'trinary').
 
-</description><link>https://en.wikipedia.org/wiki/Star_polygon</link><pubDate>Sat, 22 Nov 2025 05:02:00 GMT</pubDate></item></channel></rss>
+</description><link>https://en.wikipedia.org/wiki/Binary_system</link><pubDate>Mon, 24 Nov 2025 05:02:29 GMT</pubDate></item></channel></rss>
