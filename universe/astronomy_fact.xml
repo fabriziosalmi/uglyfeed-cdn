@@ -1,3 +1,15 @@
-<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Cosmological horizon</title><description>A cosmological horizon is one of two boundaries in three dimensional space, the particle horizon or the event horizon. The particle horizon divides space into those points reached by light traveling to an observer from those points too distant for light to have been observed. The particle horizon is the boundary of the observable universe. The event horizon includes all possible future observations: points outside the event horizon can never be observed. The event horizon is the boundary of all future observable universes. These boundaries are a consequence of general relativity, the expanding universe, and the physics of Big Bang cosmology.
+<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Lambda-CDM model</title><description>The Lambda-CDM, Lambda cold dark matter, or ΛCDM model is a mathematical model of the Big Bang theory with three major components:
 
-</description><link>https://en.wikipedia.org/wiki/Cosmological_horizon</link><pubDate>Mon, 16 Mar 2026 05:34:46 GMT</pubDate></item></channel></rss>
+a cosmological constant, denoted by lambda (Λ), associated with dark energy;
+the postulated cold dark matter, denoted by CDM;
+ordinary matter.
+It is the current standard model of Big Bang cosmology, as it is the simplest model that provides a reasonably good account of:
+
+the existence and structure of the cosmic microwave background;
+the large-scale structure in the distribution of galaxies;
+the observed abundances of hydrogen (including deuterium), helium, and lithium;
+the accelerating expansion of the universe observed in the light from distant galaxies and supernovae.
+The model assumes that general relativity is the correct theory of gravity on cosmological scales. It emerged in the late 1990s as a concordance cosmology, after a period when disparate observed properties of the universe appeared mutually inconsistent, and there was no consensus on the makeup of the energy density of the universe.
+The ΛCDM model has been successful in modeling a broad collection of astronomical observations over decades. Remaining issues challenge the assumptions of the ΛCDM model and have led to many alternative models.
+
+</description><link>https://en.wikipedia.org/wiki/Lambda-CDM_model</link><pubDate>Tue, 17 Mar 2026 05:26:23 GMT</pubDate></item></channel></rss>
