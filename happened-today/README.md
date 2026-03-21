@@ -5,9 +5,9 @@ Welcome to the daily update of significant events from history! Below are the RS
 | Feed | Description | Item Count |
 |------|-------------|------------|
 | 🔗 [ancient_battles](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/ancient_battles.xml) | Ancient battles and wars before 1000 AD. | 3 |
-| 🔗 [artists](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/artists.xml) | Births of notable writers, poets, directors, and actors today. | 6 |
+| 🔗 [artists](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/artists.xml) | Births of notable writers, poets, directors, and actors today. | 7 |
 | 🔗 [arts_and_books](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/arts_and_books.xml) | Artworks and books released on this date. | 1 |
-| 🔗 [explorations](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/explorations.xml) | Famous explorations that happened today. | 5 |
+| 🔗 [explorations](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/explorations.xml) | Famous explorations that happened today. | 3 |
 | 🔗 [inventions](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/inventions.xml) | Notable inventions unveiled on this date. | 7 |
 | 🔗 [presidents](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/presidents.xml) | Births of presidents and leaders today. | 9 |
 | 🔗 [saints](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/saints.xml) | Saints commemorated today across religions. | 3 |
