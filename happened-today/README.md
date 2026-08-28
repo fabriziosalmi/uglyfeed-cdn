@@ -12,4 +12,4 @@ Welcome to the daily update of significant events from history! Below are the RS
 | 🔗 [presidents](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/presidents.xml) | Births of presidents and leaders today. | 8 |
 | 🔗 [saints](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/saints.xml) | Saints commemorated today across religions. | 3 |
 | 🔗 [soccer_matches](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/soccer_matches.xml) | Significant soccer matches played on this date. | 3 |
-| 🔗 [ww2_battles](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/ww2_battles.xml) | World War II battles that occurred today. | 1 |
+| 🔗 [ww2_battles](https://raw.githubusercontent.com/fabriziosalmi/uglyfeed-cdn/main/happened-today/ww2_battles.xml) | World War II battles that occurred today. | 3 |
