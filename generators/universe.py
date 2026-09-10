@@ -5,6 +5,12 @@ from datetime import datetime
 import os
 import logging
 import argparse
+import wiki_policy
+
+# Wikimedia answers a client without a descriptive User-Agent with a 403 whose
+# body is plain text, so the failure surfaces as a JSONDecodeError that has
+# nothing to do with JSON. This must run before the first query. See wiki_policy.
+wiki_policy.configure()
 
 # Step 1: Setup Logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
