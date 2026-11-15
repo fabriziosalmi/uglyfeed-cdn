@@ -1,3 +1,12 @@
-<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Hindu cosmology</title><description>Hindu cosmology is the description of the universe and its states of matter, cycles within time, physical structure, and effects on living entities according to Hindu texts. Hindu cosmology is also intertwined with the idea of a creator who allows the world to exist and take shape.
+<rss version="2.0"><channel><title>Astronomy fact of the Day</title><link>http://example.com/astronomy_fact</link><description>RSS feed of the astronomy fact of the day.</description><item><title>Optical depth (astrophysics)</title><description>Optical depth in astrophysics refers to a measure of transparency for electromagnetic radiation within an astrophysical medium. Quantified by the symbol τ, it measures how much a beam of light is attenuated due to absorption and scattering as it travels through a physical distance z.
+The optical depth at a given frequency ν is defined as the integral of the extinction coefficient αν (the sum of absorption and scattering coefficients) along the radiation path:
 
-</description><link>https://en.wikipedia.org/wiki/Hindu_cosmology</link><pubDate>Sat, 14 Nov 2026 05:02:19 GMT</pubDate></item></channel></rss>
+τν(z)≡∫0zαν(z′)dz′=σνN,
+where σν is the extinction cross-section per particle and N is the column density (the number of target particles per unit area along the line of sight). Large values (τν≫1) indicate an optically thick medium with high obscuration, whereas small values (τν≪1) correspond to an optically thin medium where radiation passes through largely unhindered.
+In radiative transfer, the attenuation of monochromatic intensity Iν along a path is described by the Beer–Lambert law:
+
+Iν(z)=Iν,0e−τν
+Alternatively, the extinction coefficient α can be related to the imaginary part of the complex refractive index, κ, by:
+
+α=4πκλ0,
+where λ0 is the vacuum wavelength of the incident light.</description><link>https://en.wikipedia.org/wiki/Optical_depth_(astrophysics)</link><pubDate>Sun, 15 Nov 2026 05:02:29 GMT</pubDate></item></channel></rss>
